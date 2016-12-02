@@ -1,5 +1,9 @@
-var api = require('./src/api');
-var util = require('./src/util');
+#!/usr/bin/env node
+
+'use strict';
+
+var api = require('../lib/api');
+var util = require('../lib/util');
 
 const commands = {
 	'get' : api.get,

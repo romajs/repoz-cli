@@ -1,12 +1,10 @@
 # repoz-cli
 
-Documentation: [http://repoz.dextra.com.br/repoz/docs.html](http://repoz.dextra.com.br/repoz/docs.html)  
-
-Install dependencies: `npm install`
+Repoz: [http://repoz.dextra.com.br]()
 
 ## Install
 
-`./install.sh /usr/local/bin`
+`npm install -g repoz`
 
 ## Usage
 
@@ -35,3 +33,11 @@ Each command will prompt user credentials (username & password)
 ### LIST
 
 `list`
+
+## Development
+
+Documentation: [http://repoz.dextra.com.br/repoz/docs.html]()  
+
+Install dependencies: `npm install`
+
+Create symbolik link: `npm link`
