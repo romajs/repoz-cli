@@ -4,9 +4,13 @@ Documentation: [http://repoz.dextra.com.br/repoz/docs.html](http://repoz.dextra.
 
 Install dependencies: `npm install`
 
+## Install
+
+`./install.sh /usr/local/bin`
+
 ## Usage
 
-`repoz -p [project] [command] [args]`
+`repoz -p <project> <command> [args]`
 
 ## Commands
 
@@ -30,4 +34,4 @@ Each command will prompt user credentials (username & password)
 
 ### LIST
 
-`repoz list`
+`list`
