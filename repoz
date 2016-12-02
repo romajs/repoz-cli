@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+ 
+var repoz = require('./index');
+
+repoz();
