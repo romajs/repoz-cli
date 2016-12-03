@@ -1,6 +1,7 @@
 {
   "name": "repoz",
-  "version": "0.0.3",
+  "version": "0.0.4",
+  "homepage" : "http://repoz.dextra.com.br", 
   "description": "Repoz client",
   "bin": {
     "repoz" : "./bin/repoz"
