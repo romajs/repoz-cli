@@ -1,44 +1,79 @@
 #!/usr/bin/env node
 
-'use strict';
+// 'use strict';
 
-var api = require('../lib/api');
-var util = require('../lib/util');
+var program = require('commander');
+var prompt = require('prompt');
+var q = require('q');
+var repoz = require('../lib/repoz');
 
-const commands = {
-	'get' : api.get,
-	'post' : api.post,
-	'put' : api.put,
-	'delete' : api.delete,
-	'list' : api.list,
-};
-
-util.parseArgs(process.argv).then(function(program) {
+parseArgs(process.argv).then(function(program) {
 
 	// console.log('program: ', program);
 
-	var command = commands[program.command];
+	askCredentials().then(function(credentials) {
 
-	if(command === undefined) {
-		console.info('Command "%s" not found.', program.command);
-		process.exit(1);
-	}
+		var r = repoz(program.project, credentials.username, credentials.password);
+		var command = r[program.command];
+		// console.log('command: ', command);
 
-	util.askCredentials().then(function(credentials) {
-
-		// console.log('credentials: ', credentials);
+		if(command === undefined) {
+			console.info('Command "%s" not found.', program.command);
+			process.exit(1);
+		}
 
 		var args = {
-			auth : credentials.username + ':' + credentials.password,
-			project: program.project,
 			path: program.path,
-			file: program.file,
+			filepath: program.filepath,
 		};
 
-		command.apply(this, [args]).finally(function(data) {
+		command.apply(this, [args]).finally(function() {
 			console.info('Done.');
 			process.exit(0);
 		});
-	})
+
+	});
 
 });
+
+function parseArgs(argv) {
+
+	var d = q.defer();
+
+	program.version('0.0.1')
+		.option('-p, --project [project]', 'Project')
+		.arguments('<command> [path] [filepath]')
+		.action(function (command, path, filepath) {
+			d.resolve({
+				project: program.project,
+				command: command,
+				path: path,
+				filepath: filepath,
+			});
+		})
+		.parse(argv);
+
+	return d.promise;
+}
+
+function askCredentials() {
+
+	var d = q.defer();
+
+	var properties = [
+		{ name: 'username' },
+		{ name: 'password', hidden: true }
+	];
+
+	prompt.start();
+
+	prompt.get(properties, function (err, credentials) {
+		if (err) {
+			d.reject(err);
+		} else {
+			d.resolve(credentials);
+		}
+	});
+
+	return d.promise;
+}
