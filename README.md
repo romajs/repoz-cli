@@ -1,38 +1,53 @@
 # repoz-cli
 
+
+Repoz node client. Can be used both as npm pacakge or client tool
+
 Repoz: [http://repoz.dextra.com.br]()
 
 ## Install
 
 `npm install -g repoz`
 
-## Usage
+### Package
+
+Require repoz npm package and create an instance for each project with username and password
+
+#### Usage
+
+```js
+var repoz = require('repoz');
+
+repoz('myProject', 'myUser', 'myPass').list();
+```
+
+### Client
+
+Each client call will prompt for user credentials (username & password)
+
+#### Usage
 
 `repoz -p <project> <command> [args]`
 
-## Commands
+### Commands
 
-Each command will prompt user credentials (username & password)
+Method  | Usage  | Arguments
+--------|--------|------------
+GET     | get    | `<path> [file]`
+POST    | post   | `<path> <file>`
+PUT     | put    | `<path> <file>`
+DELETE  | delete | `<path>`
+LIST    | list   | ` `
 
-### GET
+#### Examples
 
-`get <path> [file]`
+`repoz -p myProject post /sub/folder/file.txt local/sub/folder/another.txt`
 
-### POST
+`repoz -p myProject get /sub/folder/file.txt`
 
-`post <path> <file>`
+`repoz -p myProject delete /sub/folder`
 
-### PUT
-
-`put <path> <file>`
-
-### DELETE
-
-`delete <path>`
-
-### LIST
-
-`list`
+`repoz -p myProject list`
 
 ## Development
 
