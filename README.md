@@ -4,7 +4,7 @@
 
 Repoz node client. Can be used both as npm pacakge or client tool
 
-Repoz: [http://repoz.dextra.com.br]
+Repoz: http://repoz.dextra.com.br
 
 ## Install
 
@@ -52,7 +52,7 @@ LIST    | list   | ` `
 
 ## Development
 
-Documentation: [http://repoz.dextra.com.br/repoz/docs.html] 
+Documentation: http://repoz.dextra.com.br/repoz/docs.html
 
 Install dependencies: `npm install`
 
