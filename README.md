@@ -1,5 +1,6 @@
 # repoz-cli
 
+[![npm](https://img.shields.io/npm/v/repoz.svg)]()
 
 Repoz node client. Can be used both as npm pacakge or client tool
 
