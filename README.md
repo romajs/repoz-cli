@@ -34,11 +34,13 @@ Each client call will prompt for user credentials (username & password)
 
 Method  | Usage  | Arguments
 --------|--------|------------
-GET     | get    | `<path> [file]`
-POST    | post   | `<path> <file>`
-PUT     | put    | `<path> <file>`
-DELETE  | delete | `<path>`
-LIST    | list   | ` `
+`GET`     | get    | `<path> [file]`
+`POST`    | post   | `<path> [file]`
+`PUT`     | put    | `<path> [file]`
+`DELETE`  | delete | `<path>`
+`LIST`    | list   | ` `
+
+Obs.: For `GET`, `POST` and `PUT`, if file is not specified then path basename will be used.
 
 #### Examples
 

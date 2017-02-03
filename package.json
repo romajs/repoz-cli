@@ -1,11 +1,11 @@
 {
   "name": "repoz",
   "version": "0.0.6",
-  "homepage" : "http://repoz.dextra.com.br", 
+  "homepage": "http://repoz.dextra.com.br",
   "description": "Repoz client",
-  "main" : "./lib/repoz.js",
+  "main": "./lib/repoz.js",
   "bin": {
-    "repoz" : "./bin/repoz"
+    "repoz": "./bin/repoz"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,8 +17,9 @@
   "author": "@romajs",
   "license": "BSD-2-Clause",
   "dependencies": {
-    "commander" : "~2.9.0",
-    "prompt" : "~1.0.0",
-    "q" : "~1.4.1"
+    "commander": "~2.9.0",
+    "path": "^0.12.7",
+    "prompt": "~1.0.0",
+    "q": "~1.4.1"
   }
 }

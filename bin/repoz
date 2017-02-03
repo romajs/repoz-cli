@@ -27,9 +27,12 @@ parseArgs(process.argv).then(function(program) {
 			program.filepath,
 		];
 
-		command.apply(this, args).finally(function() {
+		command.apply(this, args).then(function() {
 			console.info('Done.');
-			process.exit(0);
+			// process.exit(0);
+		}).catch(function(err) {
+			console.error('Failed. ' + err);
+			// process.exit(1);
 		});
 
 	});
