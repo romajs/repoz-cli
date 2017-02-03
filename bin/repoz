@@ -22,12 +22,12 @@ parseArgs(process.argv).then(function(program) {
 			process.exit(1);
 		}
 
-		var args = {
-			path: program.path,
-			filepath: program.filepath,
-		};
+		var args = [
+			program.path,
+			program.filepath,
+		];
 
-		command.apply(this, [args]).finally(function() {
+		command.apply(this, args).finally(function() {
 			console.info('Done.');
 			process.exit(0);
 		});
