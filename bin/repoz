@@ -28,11 +28,11 @@ parseArgs(process.argv).then(function(program) {
 		];
 
 		command.apply(this, args).then(function() {
-			console.info('Done.');
-			// process.exit(0);
+			console.info('done.');
+			process.exit(0);
 		}).catch(function(err) {
-			console.error('Failed. ' + err);
-			// process.exit(1);
+			console.error('failed.', err);
+			process.exit(1);
 		});
 
 	});
