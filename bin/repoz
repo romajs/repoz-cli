@@ -2,32 +2,50 @@
 
 // 'use strict';
 
+const fs = require('fs');
+const os = require('os');
+const winston = require('winston');
 var program = require('commander');
 var prompt = require('prompt');
 var q = require('q');
 var repoz = require('../lib/repoz');
-const winston = require('winston');
 
-parseArgs(process.argv).then(function(program) {
+var p = os.homedir() + '/.repoz';
+if(!fs.existsSync(p)) {
+	fs.mkdirSync(p);
+}
 
-	winston.info(program);
+var f = p + '/credentials.json';
+if(!fs.existsSync(f)) {
+	fs.writeFileSync(f, '[]\n');
+}
 
-	askCredentials().then(function(credentials) {
+const AT_READ = 0, AT_WRITE = 1;
 
-		var r = repoz(program.project, credentials.username, credentials.password);
-		var command = r[program.command];
+const ACCESS_TYPES = {
+	get : AT_READ,
+	post : AT_WRITE,
+	put : AT_WRITE,
+	delete : AT_WRITE,
+	list : AT_READ,
+};
+
+parseArgs(process.argv).then(function(args) {
+
+	winston.info(args);
+
+	getCredential(args.project, ACCESS_TYPES[args.command]).then(function(credential) {
+
+		var r = repoz(args.project, credential.username, credential.password);
+		var command = r[args.command];
 
 		if(command === undefined) {
-			winston.info('Command "%s" not found.', program.command);
+			winston.info('Command "%s" not found.', args.command);
 			process.exit(1);
 		}
 
-		var args = [
-			program.path,
-			program.filepath,
-		];
-
-		command.apply(this, args).then(function() {
+		command.apply(this, [args.path, args.filepath]).then(function() {
+			saveCredential(credential);
 			winston.info('done.');
 			process.exit(0);
 		}).catch(function(err) {
@@ -59,7 +77,49 @@ function parseArgs(argv) {
 	return d.promise;
 }
 
-function askCredentials() {
+function saveCredential(credential) {
+	var credentials = JSON.parse(fs.readFileSync(f));
+	credentials.push(credential);
+	fs.writeFileSync(f, JSON.stringify(credentials) + '\n');
+	winston.info('credentials saved.');
+}
+
+function getCredential(project, access_type) {
+
+	var d = q.defer();
+
+	findCredential(project, access_type).then(function(credentials) {
+
+		if(credentials) {
+			d.resolve(credentials);
+		} else {
+			askCredential().then(function(credentials) {
+				credentials.project = project;
+				credentials.access_type = access_type;
+				d.resolve(credentials);
+			});
+		}
+	})
+
+	return d.promise;
+}
+
+function findCredential(project, access_type) {
+
+	var d = q.defer();
+
+	var credentials = JSON.parse(fs.readFileSync(f));
+
+	var credential = credentials.find(function(credential) {
+		return credential.project === project && credential.access_type >= access_type;
+	})
+
+	d.resolve(credential);
+
+	return d.promise;
+}
+
+function askCredential() {
 
 	var d = q.defer();
 
@@ -68,8 +128,6 @@ function askCredentials() {
 		{ name: 'password', hidden: true }
 	];
 
-	prompt.start();
-
 	prompt.get(properties, function (err, credentials) {
 		if (err) {
 			d.reject(err);
@@ -77,6 +135,8 @@ function askCredentials() {
 			d.resolve(credentials);
 		}
 	});
+
+	prompt.start();
 
 	return d.promise;
 }
