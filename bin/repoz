@@ -4,21 +4,11 @@
 
 const fs = require('fs');
 const os = require('os');
+const program = require('commander');
+const prompt = require('prompt');
+const q = require('q');
 const winston = require('winston');
-var program = require('commander');
-var prompt = require('prompt');
-var q = require('q');
-var repoz = require('../lib/repoz');
-
-var p = os.homedir() + '/.repoz';
-if(!fs.existsSync(p)) {
-	fs.mkdirSync(p);
-}
-
-var f = p + '/credentials.json';
-if(!fs.existsSync(f)) {
-	fs.writeFileSync(f, '[]\n');
-}
+const repoz = require('../lib/repoz');
 
 const AT_READ = 0, AT_WRITE = 1;
 
@@ -29,6 +19,18 @@ const ACCESS_TYPES = {
 	delete : AT_WRITE,
 	list : AT_READ,
 };
+
+var d = os.homedir() + '/.repoz';
+if(!fs.existsSync(d)) {
+	fs.mkdirSync(d);
+}
+
+var f = d + '/credentials.json';
+if(!fs.existsSync(f)) {
+	fs.writeFileSync(f, '[]\n');
+}
+
+var credentials = readCredentials(f);
 
 parseArgs(process.argv).then(function(args) {
 
@@ -45,7 +47,7 @@ parseArgs(process.argv).then(function(args) {
 		}
 
 		command.apply(this, [args.path, args.filepath]).then(function() {
-			saveCredential(credential);
+			updateCredentials(credential);
 			winston.info('done.');
 			process.exit(0);
 		}).catch(function(err) {
@@ -77,26 +79,47 @@ function parseArgs(argv) {
 	return d.promise;
 }
 
-function saveCredential(credential) {
-	var credentials = JSON.parse(fs.readFileSync(f));
-	credentials.push(credential);
+function readCredentials(f) {
+	return JSON.parse(fs.readFileSync(f));
+}
+
+function updateCredentials(credential) {
+
+	var index, c = credentials.find(function(c, index) {
+		return c.project === credential.project && c.username === credential.username;
+	});
+
+	if(!c) {
+		credential.created_at = new Date().toISOString();
+		credential.updated_at = null;
+		credentials.push(credential);
+	} else if(c.password !== credential.password || c.access_type !== credential.access_type) {
+		c.password = credential.password;
+		c.access_type = credential.access_type;
+		c.updated_at = new Date().toISOString();
+		credentials.splice(index, 1, c);
+	} else {
+		return;
+	}
+
 	fs.writeFileSync(f, JSON.stringify(credentials) + '\n');
-	winston.info('credentials saved.');
+	
+	winston.info('credential saved.');
 }
 
 function getCredential(project, access_type) {
 
 	var d = q.defer();
 
-	findCredential(project, access_type).then(function(credentials) {
+	findCredential(project, access_type).then(function(credential) {
 
-		if(credentials) {
-			d.resolve(credentials);
+		if(credential) {
+			d.resolve(credential);
 		} else {
-			askCredential().then(function(credentials) {
-				credentials.project = project;
-				credentials.access_type = access_type;
-				d.resolve(credentials);
+			askCredential().then(function(credential) {
+				credential.project = project;
+				credential.access_type = access_type;
+				d.resolve(credential);
 			});
 		}
 	})
@@ -107,8 +130,6 @@ function getCredential(project, access_type) {
 function findCredential(project, access_type) {
 
 	var d = q.defer();
-
-	var credentials = JSON.parse(fs.readFileSync(f));
 
 	var credential = credentials.find(function(credential) {
 		return credential.project === project && credential.access_type >= access_type;
