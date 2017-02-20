@@ -2,6 +2,7 @@
 
 // 'use strict';
 
+const crypto = require('crypto');
 const fs = require('fs');
 const os = require('os');
 const program = require('commander');
@@ -20,17 +21,24 @@ const ACCESS_TYPES = {
 	list : AT_READ,
 };
 
+var credentials = [], cipher_key;
+
 var d = os.homedir() + '/.repoz';
 if(!fs.existsSync(d)) {
 	fs.mkdirSync(d);
 }
 
 var f = d + '/credentials.json';
+
 if(!fs.existsSync(f)) {
-	fs.writeFileSync(f, '[]\n');
+	cipher_key = crypto.randomBytes(256).toString('base64');
+	fs.writeFileSync(d + '/.cipher_key', cipher_key, { mode: 0o400});
+	saveCredentials();
+} else {
+	cipher_key = fs.readFileSync(d + '/.cipher_key');
 }
 
-var credentials = readCredentials(f);
+loadCredentials(f);
 
 parseArgs(process.argv).then(function(args) {
 
@@ -48,6 +56,7 @@ parseArgs(process.argv).then(function(args) {
 
 		command.apply(this, [args.path, args.filepath]).then(function() {
 			updateCredentials(credential);
+			saveCredentials();
 			winston.info('done.');
 			process.exit(0);
 		}).catch(function(err) {
@@ -79,8 +88,11 @@ function parseArgs(argv) {
 	return d.promise;
 }
 
-function readCredentials(f) {
-	return JSON.parse(fs.readFileSync(f));
+function loadCredentials(f) {
+	var encrypted = fs.readFileSync(f, 'utf8');
+	var decipher = crypto.createDecipher('aes192', cipher_key);
+	var decrypted = decipher.update(encrypted, 'base64', 'utf8') + decipher.final('utf8');
+	credentials = JSON.parse(decrypted);
 }
 
 function updateCredentials(credential) {
@@ -101,10 +113,14 @@ function updateCredentials(credential) {
 	} else {
 		return;
 	}
+}
 
-	fs.writeFileSync(f, JSON.stringify(credentials) + '\n');
-	
-	winston.info('credential saved.');
+function saveCredentials() {
+	var json = JSON.stringify(credentials);
+	var cipher = crypto.createCipher('aes192', cipher_key);
+	var encrypted = cipher.update(json, 'utf8', 'base64') + cipher.final('base64');
+	fs.writeFileSync(f, encrypted, { mode: 0o600});
+	// winston.info('credential saved.');
 }
 
 function getCredential(project, access_type) {
