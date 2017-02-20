@@ -2,14 +2,14 @@
 
 // 'use strict';
 
-const crypto = require('crypto');
 const fs = require('fs');
 const os = require('os');
 const program = require('commander');
-const prompt = require('prompt');
 const q = require('q');
 const winston = require('winston');
-const repoz = require('../lib/repoz');
+
+const repozHandler = require('../lib/repoz');
+const credentialsHandler = require('../lib/credentials.js');
 
 const AT_READ = 0, AT_WRITE = 1;
 
@@ -21,7 +21,7 @@ const ACCESS_TYPES = {
 	list : AT_READ,
 };
 
-var credentials = [], cipher_key;
+var credentials, cipher_key;
 
 var d = os.homedir() + '/.repoz';
 if(!fs.existsSync(d)) {
@@ -29,25 +29,23 @@ if(!fs.existsSync(d)) {
 }
 
 var f = d + '/credentials.json';
-
 if(!fs.existsSync(f)) {
 	cipher_key = crypto.randomBytes(256).toString('base64');
 	fs.writeFileSync(d + '/.cipher_key', cipher_key, { mode: 0o400});
-	saveCredentials();
+	credentials = credentialsHandler.createCredentials(f, cipher_key);
 } else {
 	cipher_key = fs.readFileSync(d + '/.cipher_key');
+	credentials = credentialsHandler.loadCredentials(f, cipher_key);
 }
-
-loadCredentials(f);
 
 parseArgs(process.argv).then(function(args) {
 
 	winston.info(args);
 
-	getCredential(args.project, ACCESS_TYPES[args.command]).then(function(credential) {
+	credentials.get(args.project, ACCESS_TYPES[args.command]).then(function(credential) {
 
-		var r = repoz(args.project, credential.username, credential.password);
-		var command = r[args.command];
+		var repoz = repozHandler(args.project, credential.username, credential.password);
+		var command = repoz[args.command];
 
 		if(command === undefined) {
 			winston.info('Command "%s" not found.', args.command);
@@ -55,8 +53,8 @@ parseArgs(process.argv).then(function(args) {
 		}
 
 		command.apply(this, [args.path, args.filepath]).then(function() {
-			updateCredentials(credential);
-			saveCredentials();
+			credentials.update(credential);
+			credentials.save();
 			winston.info('done.');
 			process.exit(0);
 		}).catch(function(err) {
@@ -84,96 +82,6 @@ function parseArgs(argv) {
 			});
 		})
 		.parse(argv);
-
-	return d.promise;
-}
-
-function loadCredentials(f) {
-	var encrypted = fs.readFileSync(f, 'utf8');
-	var decipher = crypto.createDecipher('aes192', cipher_key);
-	var decrypted = decipher.update(encrypted, 'base64', 'utf8') + decipher.final('utf8');
-	credentials = JSON.parse(decrypted);
-}
-
-function updateCredentials(credential) {
-
-	var index, c = credentials.find(function(c, index) {
-		return c.project === credential.project && c.username === credential.username;
-	});
-
-	if(!c) {
-		credential.created_at = new Date().toISOString();
-		credential.updated_at = null;
-		credentials.push(credential);
-	} else if(c.password !== credential.password || c.access_type !== credential.access_type) {
-		c.password = credential.password;
-		c.access_type = credential.access_type;
-		c.updated_at = new Date().toISOString();
-		credentials.splice(index, 1, c);
-	} else {
-		return;
-	}
-}
-
-function saveCredentials() {
-	var json = JSON.stringify(credentials);
-	var cipher = crypto.createCipher('aes192', cipher_key);
-	var encrypted = cipher.update(json, 'utf8', 'base64') + cipher.final('base64');
-	fs.writeFileSync(f, encrypted, { mode: 0o600});
-	// winston.info('credential saved.');
-}
-
-function getCredential(project, access_type) {
-
-	var d = q.defer();
-
-	findCredential(project, access_type).then(function(credential) {
-
-		if(credential) {
-			d.resolve(credential);
-		} else {
-			askCredential().then(function(credential) {
-				credential.project = project;
-				credential.access_type = access_type;
-				d.resolve(credential);
-			});
-		}
-	})
-
-	return d.promise;
-}
-
-function findCredential(project, access_type) {
-
-	var d = q.defer();
-
-	var credential = credentials.find(function(credential) {
-		return credential.project === project && credential.access_type >= access_type;
-	})
-
-	d.resolve(credential);
-
-	return d.promise;
-}
-
-function askCredential() {
-
-	var d = q.defer();
-
-	var properties = [
-		{ name: 'username' },
-		{ name: 'password', hidden: true }
-	];
-
-	prompt.get(properties, function (err, credentials) {
-		if (err) {
-			d.reject(err);
-		} else {
-			d.resolve(credentials);
-		}
-	});
-
-	prompt.start();
 
 	return d.promise;
 }
