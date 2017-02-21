@@ -1,6 +1,6 @@
 {
   "name": "repoz",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "homepage": "http://repoz.dextra.com.br",
   "description": "Repoz client",
   "main": "./lib/repoz.js",
