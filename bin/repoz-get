@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+
+const program = require('commander');
+
+const command = require('../lib/command');
+
+program.arguments('<project> <urlpath> [filepath]')
+	.action(function (project, urlpath, filepath, options) {
+		command.exec('get', project, [urlpath, filepath]);
+	})
+	.parse(process.argv);

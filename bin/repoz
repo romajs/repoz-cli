@@ -1,87 +1,13 @@
 #!/usr/bin/env node
 
-// 'use strict';
-
-const fs = require('fs');
-const os = require('os');
 const program = require('commander');
-const q = require('q');
-const winston = require('winston');
 
-const repozHandler = require('../lib/repoz');
-const credentialsHandler = require('../lib/credentials.js');
-
-const AT_READ = 0, AT_WRITE = 1;
-
-const ACCESS_TYPES = {
-	get : AT_READ,
-	post : AT_WRITE,
-	put : AT_WRITE,
-	delete : AT_WRITE,
-	list : AT_READ,
-};
-
-var credentials, cipher_key;
-
-var d = os.homedir() + '/.repoz';
-if(!fs.existsSync(d)) {
-	fs.mkdirSync(d);
-}
-
-var f = d + '/credentials.json';
-if(!fs.existsSync(f)) {
-	cipher_key = crypto.randomBytes(256).toString('base64');
-	fs.writeFileSync(d + '/.cipher_key', cipher_key, { mode: 0o400});
-	credentials = credentialsHandler.createCredentials(f, cipher_key);
-} else {
-	cipher_key = fs.readFileSync(d + '/.cipher_key');
-	credentials = credentialsHandler.loadCredentials(f, cipher_key);
-}
-
-parseArgs(process.argv).then(function(args) {
-
-	winston.info(args);
-
-	credentials.get(args.project, ACCESS_TYPES[args.command]).then(function(credential) {
-
-		var repoz = repozHandler(args.project, credential.username, credential.password);
-		var command = repoz[args.command];
-
-		if(command === undefined) {
-			winston.info('Command "%s" not found.', args.command);
-			process.exit(1);
-		}
-
-		command.apply(this, [args.path, args.filepath]).then(function() {
-			credentials.update(credential);
-			credentials.save();
-			winston.info('done.');
-			process.exit(0);
-		}).catch(function(err) {
-			winston.error('failed.', err);
-			process.exit(1);
-		});
-
-	});
-
-});
-
-function parseArgs(argv) {
-
-	var d = q.defer();
-
-	program.version('0.0.1')
-		.option('-p, --project [project]', 'Project')
-		.arguments('<command> [path] [filepath]')
-		.action(function (command, path, filepath) {
-			d.resolve({
-				project: program.project,
-				command: command,
-				path: path,
-				filepath: filepath,
-			});
-		})
-		.parse(argv);
-
-	return d.promise;
-}
+program
+	// .option('-u, --username', 'project username')
+	// .option('-S, --no-save', 'does not save credencial')
+	.command('list [options] <project> [urlpath]', 'list')
+	.command('get [options] <project> <urlpath> [filepath]', 'get')
+	.command('post [options] <project> <filepath> <urlpath>', 'post')
+	.command('put [options] <project> <filepath> <urlpath>', 'put')
+	.command('delete [options] <project> <urlpath>', 'delete')
+	.parse(process.argv);

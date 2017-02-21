@@ -5,7 +5,12 @@
   "description": "Repoz client",
   "main": "./lib/repoz.js",
   "bin": {
-    "repoz": "./bin/repoz"
+    "repoz": "./bin/repoz",
+    "repoz-delete": "./bin/repoz-delete",
+    "repoz-get": "./bin/repoz-get",
+    "repoz-list": "./bin/repoz-list",
+    "repoz-post": "./bin/repoz-post",
+    "repoz-put": "./bin/repoz-put"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,7 +22,7 @@
   "author": "@romajs",
   "license": "BSD-2-Clause",
   "dependencies": {
-    "commander": "~2.9.0",
+    "commander": "^2.9.0",
     "crypto": "0.0.3",
     "path": "^0.12.7",
     "prompt": "~1.0.0",

@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+
+const program = require('commander');
+
+const command = require('../lib/command');
+
+program.arguments('<project> <urlpath>')
+	.action(function (project, urlpath, options) {
+		command.exec('delete', project, [urlpath]);
+	})
+	.parse(process.argv);
