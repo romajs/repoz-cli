@@ -5,8 +5,8 @@ const program = require('commander');
 program
 	// .option('-u, --username', 'project username')
 	// .option('-S, --no-save', 'does not save credencial')
-	.command('list [options] <project> [urlpath]', 'list')
-	.command('get [options] <project> <urlpath> [filepath]', 'get')
+	.command('list [options] <project> [urlpath]', 'list (urlpath is optional, default \'/\')')
+	.command('get [options] <project> <urlpath> [filepath]', 'get (filepath is optional, default basename(urlpath))')
 	.command('post [options] <project> <filepath> <urlpath>', 'post')
 	.command('put [options] <project> <filepath> <urlpath>', 'put')
 	.command('delete [options] <project> <urlpath>', 'delete')

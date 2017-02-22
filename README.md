@@ -6,51 +6,110 @@ Repoz node client. Can be used both as npm pacakge or client tool
 
 Repoz: http://repoz.dextra.com.br
 
-## Install
+### Client Usage (bin)
 
 `npm install -g repoz`
 
-### Package
+#### Usage
 
-Require repoz npm package and create an instance for each project with username and password
+```
+Usage: repoz [options] [command]
+
+
+Commands:
+
+list [options] <project> [urlpath]             list (urlpath is optional, default '/')
+get [options] <project> <urlpath> [filepath]   get (filepath is optional, default basename(urlpath))
+post [options] <project> <filepath> <urlpath>  post
+put [options] <project> <filepath> <urlpath>   put
+delete [options] <project> <urlpath>           delete
+help [cmd]                                     display help for [cmd]
+
+Options:
+
+-h, --help  output usage information
+
+```
+
+#### Examples
+
+1) `repoz post myProject local/sub/folder/another.txt /sub/folder/file.txt`
+
+Saves **local/sub/folder/another.txt** to **https://repoz.dextra.com.br/repoz/r/myProject/sub/folder/file.txt**
+
+2) `repoz get myProject /sub/folder/file.txt`
+
+Downloads **https://repoz.dextra.com.br/repoz/r/myProject/sub/folder/file.txt** to **./file.txt**
+
+3) `repoz delete myProject /sub/folder`
+
+Deletes everything under **https://repoz.dextra.com.br/repoz/r/myProject/sub/folder**
+
+4) `repoz list -r myProject`
+
+List all files under **https://repoz.dextra.com.br/repoz/r/myProject/** recursively
+
+5) `repoz list myProject /sub/folder`
+
+List files only in **https://repoz.dextra.com.br/repoz/r/myProject/sub/folder**
+
+#### Credentials
+
+Credentials are stored into user local home folder, under `~/.repoz` encrypted with `aes192`  
+Also the `.cipher_key` used for encryption is saved in to the same folder.  
+Username and password will be prompt only when needed, these are the rules:
+
+* Project has no credentials stored at all.
+* There are only **read** access type credentials stored for a **write** command.
+
+Access type are **read** and **write** operations, and the relations with commands are this:
+
+* **read** : get, list
+* **write**: post, put, delete
+
+**Write** access type credentials can be used for **read** commands. But **read** access type credentials cannot be used for **write** commands.
+
+Because this client does not known the access type of the credentials, it tries to guess it.
+So, for the first time a credential was stored, and it was a **read** command, then its stored as **read** access type. But if the same credential its used for **write** command (after prompt), then the credential gets updated to **write** access type (and also the password in the process).
+
+### Module usage (lib)
+
+`npm install --save repoz`
 
 #### Usage
 
 ```js
 var repoz = require('repoz');
+var myProject = repoz('myProject', 'myUser', 'myPass')
 
-repoz('myProject', 'myUser', 'myPass').list();
+myProject.list(urlpath, recursive)
+myProject.get(urlpath, filepath)
+myProject.put(filepath, urlpath) 
+myProject.post(filepath, urlpath) 
+myProject.delete(urlpath)
 ```
 
-### Client
-
-Each client call will prompt for user credentials (username & password)
-
-#### Usage
-
-`repoz -p <project> <command> [args]`
-
-### Commands
-
-Method  | Usage  | Arguments
---------|--------|------------
-`GET`     | get    | `<path> [file]`
-`POST`    | post   | `<path> [file]`
-`PUT`     | put    | `<path> [file]`
-`DELETE`  | delete | `<path>`
-`LIST`    | list   | ` `
-
-Obs.: For `GET`, `POST` and `PUT`, if file is not specified then path basename will be used.
+*Remember that all commands are promises* 
 
 #### Examples
 
-`repoz -p myProject post /sub/folder/file.txt local/sub/folder/another.txt`
+*Same examples from above*
 
-`repoz -p myProject get /sub/folder/file.txt`
+```js
+myProject.post('local/sub/folder/another.txt', '/sub/folder/file.txt');
+myProject.get('/sub/folder/file.txt');
+myProject.delete('/sub/folder/');
+myProject.list('/', true);
+myProject.list('/sub/folder');
+```
 
-`repoz -p myProject delete /sub/folder`
+### Overall highligths
 
-`repoz -p myProject list`
+* Auto remove all doubles `'//'`
+* Auto completion of the first `'/'`, so is not needed
+* Auto fix broken query string `'/?'` for list command
+* Auto resolve path like `../other/folder`
+* Credentials are stored, prompt once, use forever
 
 ## Development
 
@@ -58,4 +117,4 @@ Documentation: http://repoz.dextra.com.br/repoz/docs.html
 
 Install dependencies: `npm install`
 
-Create symbolik link: `npm link`
+Create symbolik link: `sudo npm link`
