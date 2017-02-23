@@ -11,9 +11,9 @@ describe('repoz', function() {
 
 	beforeEach(function() {
 		this.request = sinon.stub(http, 'request'); 
-		this.readFileSync = sinon.stub(fs, 'readFileSync');
-		this.writeFileSync = sinon.stub(fs, 'writeFileSync');
-		this.createReadStream = sinon.stub(fs, 'createReadStream');
+		sinon.stub(fs, 'readFileSync');
+		sinon.stub(fs, 'writeFileSync');
+		sinon.stub(fs, 'createReadStream');
 	});
  
 	afterEach(function() {

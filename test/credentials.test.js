@@ -9,8 +9,8 @@ var credentials = require('../lib/credentials.js');
 describe('credentials', function() {
 
 	beforeEach(function() {
-		sinon.stub(fs, 'writeFileSync');
 		sinon.stub(fs, 'readFileSync').returns('hdu9rN225PT/nw/CgDOhyw==');
+		sinon.stub(fs, 'writeFileSync');
 		this.promptGet = sinon.stub(prompt, 'get');
 	});
  
