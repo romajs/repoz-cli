@@ -1,8 +1,6 @@
 # repoz-cli
 
-[![npm](https://img.shields.io/npm/v/repoz.svg)](https://www.npmjs.com/package/repoz)
-
-[![CircleCI](https://circleci.com/gh/romajs/repoz-cli.svg?style=svg)](https://circleci.com/gh/romajs/repoz-cli)
+[![npm](https://img.shields.io/npm/v/repoz.svg)](https://www.npmjs.com/package/repoz) [![CircleCI](https://img.shields.io/circleci/project/github/RedSparr0w/node-csgo-parser.svg)](https://circleci.com/gh/romajs/repoz-cli)
 
 Repoz node client. Can be used both as npm pacakge or client tool
 
