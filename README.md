@@ -2,6 +2,8 @@
 
 [![npm](https://img.shields.io/npm/v/repoz.svg)](https://www.npmjs.com/package/repoz)
 
+[![CircleCI](https://circleci.com/gh/romajs/repoz-cli.svg?style=svg)](https://circleci.com/gh/romajs/repoz-cli)
+
 Repoz node client. Can be used both as npm pacakge or client tool
 
 Repoz: http://repoz.dextra.com.br
@@ -120,6 +122,6 @@ myProject.list('/sub/folder');
 
 Documentation: http://repoz.dextra.com.br/repoz/docs.html
 
-Install dependencies: `npm install`
+Install dependencies: `npm install --dev`
 
 Create symbolik link: `sudo npm link`
