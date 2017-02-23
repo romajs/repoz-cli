@@ -72,6 +72,11 @@ Access type are **read** and **write** operations, and the relations with comman
 Because this client does not known the access type of the credentials, it tries to guess it.
 So, for the first time a credential was stored, and it was a **read** command, then its stored as **read** access type. But if the same credential its used for **write** command (after prompt), then the credential gets updated to **write** access type (and also the password in the process).
 
+Credentials are updated when:
+
+* Password changes
+* Access type changes from **read** to **write**
+
 ### Module usage (lib)
 
 `npm install --save repoz`
