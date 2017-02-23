@@ -20,7 +20,7 @@
     "url": "https://github.com/romajs/repoz-cli.git"
   },
   "author": "@romajs",
-  "license": "BSD-2-Clause",
+  "license": "ISC",
   "dependencies": {
     "commander": "^2.9.0",
     "crypto": "0.0.3",
