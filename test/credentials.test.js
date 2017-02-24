@@ -250,7 +250,7 @@ describe('credentials', function() {
 
 	});
  
- 	it('get / ask', function(done) {
+ 	it('get / prompt', function(done) {
 
 		var expected = {
 			username : 'test',
