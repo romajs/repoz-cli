@@ -27,7 +27,7 @@ describe('command', function() {
 		sinon.stub(fs, 'createReadStream');
 		sinon.stub(os, 'homedir').returns('/home/test/');
 
-		sinon.stub(credentials, 'loadCredentials').returns(new credentials.Credentials('test.dat', 'dGVzdAo='));
+		sinon.stub(credentials, 'loadVault').returns(new credentials.Vault('test.dat', 'dGVzdAo='));
 		sinon.stub(prompt, 'get').callsArgWith(1, undefined, {});
 	});
  
@@ -38,7 +38,7 @@ describe('command', function() {
 		fs.writeFileSync.restore();
 		fs.createReadStream.restore();
 		os.homedir.restore();
-		credentials.loadCredentials.restore();
+		credentials.loadVault.restore();
 		prompt.get.restore();
 	});
  

@@ -27,15 +27,27 @@ describe('credentials', function() {
 		assert.equal(expected.access_type, actual.access_type);
 	}
  
+	it('createVault', function(done) {
+		var vault = credentials.createVault('test.dat', 'dGVzdAo=');
+		assert.notEqual(null, vault);
+		done();
+	});
+
+	it('loadVault', function(done) {
+		var vault = credentials.loadVault('test.dat', 'dGVzdAo=');
+		assert.notEqual(null, vault);
+		done();
+	});
+
 	it('load', function(done) {
-		var c = new credentials.Credentials('test.dat', 'dGVzdAo=');
-		c.load();
+		var vault = new credentials.Vault('test.dat', 'dGVzdAo=');
+		vault.load();
 		done();
 	});
 
 	it('save', function(done) {
-		var c = new credentials.Credentials('test.dat', 'dGVzdAo=');
-		c.save();
+		var vault = new credentials.Vault('test.dat', 'dGVzdAo=');
+		vault.save();
 		done();
 	});
  
@@ -48,11 +60,11 @@ describe('credentials', function() {
 			access_type : 0,
 		};
 
-		var c = new credentials.Credentials('test.dat', 'dGVzdAo=');
+		var vault = new credentials.Vault('test.dat', 'dGVzdAo=');
 
-		c.update(expected);
+		vault.update(expected);
 
-		c.find('test', 0).then(function(credential) {
+		vault.find('test', 0).then(function(credential) {
 
 			assert.credential(expected, credential);
 			assert.equal(null, credential.updated_at);
@@ -64,9 +76,9 @@ describe('credentials', function() {
 				access_type : 1,
 			};
 
-			c.update(expected);
+			vault.update(expected);
 
-			c.find('test', 1).then(function(credential) {
+			vault.find('test', 1).then(function(credential) {
 
 				assert.credential(expected, credential);
 				assert.notEqual(null, credential.updated_at);
@@ -87,11 +99,11 @@ describe('credentials', function() {
 			access_type : 1,
 		};
 
-		var c = new credentials.Credentials('test.dat', 'dGVzdAo=');
+		var vault = new credentials.Vault('test.dat', 'dGVzdAo=');
 
-		c.update(expected);
+		vault.update(expected);
 
-		c.find('test', 1).then(function(credential) {
+		vault.find('test', 1).then(function(credential) {
 			
 			assert.credential(expected, credential);
 			assert.equal(null, credential.updated_at);
@@ -103,16 +115,16 @@ describe('credentials', function() {
 				access_type : 0,
 			};
 
-			c.update(expected);
+			vault.update(expected);
 
 			expected.access_type = 1;
 			
-			c.find('test', 1).then(function(credential) {
+			vault.find('test', 1).then(function(credential) {
 
 				assert.credential(expected, credential);
 				assert.equal(null, credential.updated_at);
 				
-				c.find('test', 0).then(function(credential) {
+				vault.find('test', 0).then(function(credential) {
 
 					assert.credential(expected, credential);
 					assert.equal(null, credential.updated_at);
@@ -135,11 +147,11 @@ describe('credentials', function() {
 			access_type : 1,
 		};
 
-		var c = new credentials.Credentials('test.dat', 'dGVzdAo=');
+		var vault = new credentials.Vault('test.dat', 'dGVzdAo=');
 
-		c.update(expected);
+		vault.update(expected);
 
-		c.find('test', 1).then(function(credential) {
+		vault.find('test', 1).then(function(credential) {
 
 			assert.credential(expected, credential);
 			assert.equal(null, credential.updated_at);
@@ -151,9 +163,9 @@ describe('credentials', function() {
 				access_type : 1,
 			};
 
-			c.update(expected);
+			vault.update(expected);
 
-			c.find('test', 1).then(function(credential) {
+			vault.find('test', 1).then(function(credential) {
 
 				assert.credential(expected, credential);
 				assert.notEqual(null, credential.updated_at);
@@ -169,9 +181,9 @@ describe('credentials', function() {
 
 		var expected = null;
 
-		var c = new credentials.Credentials('test.dat', 'dGVzdAo=');
+		var vault = new credentials.Vault('test.dat', 'dGVzdAo=');
 
-		c.find('test', 0).then(function(credential) {
+		vault.find('test', 0).then(function(credential) {
 
 			assert.equal(expected, credential);
 
@@ -182,14 +194,14 @@ describe('credentials', function() {
 				access_type : 0,
 			};
 
-			c.update(expected);
+			vault.update(expected);
 
-			c.find('test', 0).then(function(credential) {
+			vault.find('test', 0).then(function(credential) {
 
 				assert.credential(expected, credential);
 				assert.equal(null, credential.updated_at);
 
-				c.find('test', 1).then(function(credential) {
+				vault.find('test', 1).then(function(credential) {
 
 					assert.equal(null, credential);
 
@@ -205,9 +217,9 @@ describe('credentials', function() {
 
 		var expected = null;
 
-		var c = new credentials.Credentials('test.dat', 'dGVzdAo=');
+		var vault = new credentials.Vault('test.dat', 'dGVzdAo=');
 
-		c.find('test', 1).then(function(credential) {
+		vault.find('test', 1).then(function(credential) {
 
 			assert.equal(expected, credential);
 
@@ -218,14 +230,14 @@ describe('credentials', function() {
 				access_type : 1,
 			};
 
-			c.update(expected);
+			vault.update(expected);
 
-			c.find('test', 1).then(function(credential) {
+			vault.find('test', 1).then(function(credential) {
 
 				assert.credential(expected, credential);
 				assert.equal(null, credential.updated_at);
 
-				c.find('test', 0).then(function(credential) {
+				vault.find('test', 0).then(function(credential) {
 
 					assert.credential(expected, credential);
 					assert.equal(null, credential.updated_at);
@@ -240,13 +252,18 @@ describe('credentials', function() {
  
  	it('get / ask', function(done) {
 
-		var expected = { username : 'test', password: '123'};
+		var expected = {
+			username : 'test',
+			password: '123',
+			project : 'test',
+			access_type : 0,
+		};
 
-		var c = new credentials.Credentials('test.dat', 'dGVzdAo=');
+		var vault = new credentials.Vault('test.dat', 'dGVzdAo=');
 
 		this.promptGet.callsArgWith(1, undefined, expected);
 
-		c.get('test', 0).then(function(credential) {
+		vault.get('test', 0).then(function(credential) {
 
 			assert.credential(expected, credential);
 			assert.equal(null, credential.updated_at);
@@ -265,11 +282,11 @@ describe('credentials', function() {
 			access_type : 0,
 		};
 
-		var c = new credentials.Credentials('test.dat', 'dGVzdAo=');
+		var vault = new credentials.Vault('test.dat', 'dGVzdAo=');
 
-		c.update(expected);
+		vault.update(expected);
 
-		c.get('test', 0).then(function(credential) {
+		vault.get('test', 0).then(function(credential) {
 			
 			assert.credential(expected, credential);
 			assert.equal(null, credential.updated_at);

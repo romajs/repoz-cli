@@ -23,6 +23,18 @@ describe('repoz', function() {
 		fs.createReadStream.restore();
 	});
  
+	it('module.exports', function(done) {
+
+		var project = repoz('test', 'test', '123');
+		assert.notEqual(null, project);
+
+		project = new repoz.Project('test', 'test', '123');
+		assert.notEqual(null, project);
+
+		done();
+
+	});
+
 	it('list: 200', function(done) {
 
 		var expected = '/test/.repozauth.txt';
@@ -35,14 +47,14 @@ describe('repoz', function() {
 		var request = new PassThrough()
 		this.request.callsArgWith(1, response).returns(request);
 
-		var r = repoz('test', 'test', '123');
-	 
+		var project = repoz('test', 'test', '123');
+
 		q.allSettled([
-			r.list(),
-			r.list('/'),
-			r.list('/', true),
-			r.list('/path'),
-			r.list('/path', true),
+			project.list(),
+			project.list('/'),
+			project.list('/', true),
+			project.list('/path'),
+			project.list('/path', true),
 		]).then(function() {
 			done();
 		});
@@ -61,13 +73,13 @@ describe('repoz', function() {
 		var request = new PassThrough()
 		this.request.callsArgWith(1, response).returns(request);
 
-		var r = repoz('test', 'test', '123');
+		var project = repoz('test', 'test', '123');
 	 
 		q.allSettled([
-			r.get(''),
-			r.get('', ''),
-			r.get('x', 'y'),
-			r.get('../x', 'y'),
+			project.get(''),
+			project.get('', ''),
+			project.get('x', 'y'),
+			project.get('../x', 'y'),
 		]).then(function() {
 			done();
 		});
@@ -86,12 +98,12 @@ describe('repoz', function() {
 		var request = new PassThrough()
 		this.request.callsArgWith(1, response).returns(request);
 
-		var r = repoz('test', 'test', '123');
+		var project = repoz('test', 'test', '123');
 	 
 		q.allSettled([
-			r.post('', ''),
-			r.post('x', 'y'),
-			r.post('../x', 'y'),
+			project.post('', ''),
+			project.post('x', 'y'),
+			project.post('../x', 'y'),
 		]).then(function() {
 			done();
 		});
@@ -110,12 +122,12 @@ describe('repoz', function() {
 		var request = new PassThrough()
 		this.request.callsArgWith(1, response).returns(request);
 
-		var r = repoz('test', 'test', '123');
+		var project = repoz('test', 'test', '123');
 	 
 		q.allSettled([
-			r.put('', ''),
-			r.put('x', 'y'),
-			r.put('../x', 'y'),
+			project.put('', ''),
+			project.put('x', 'y'),
+			project.put('../x', 'y'),
 		]).then(function() {
 			done();
 		});
@@ -134,12 +146,12 @@ describe('repoz', function() {
 		var request = new PassThrough()
 		this.request.callsArgWith(1, response).returns(request);
 
-		var r = repoz('test', 'test', '123');
+		var project = repoz('test', 'test', '123');
 	 
 		q.allSettled([
-			r.delete(),
-			r.delete(''),
-			r.delete('x'),
+			project.delete(),
+			project.delete(''),
+			project.delete('x'),
 		]).then(function() {
 			done();
 		});
