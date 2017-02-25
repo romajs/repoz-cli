@@ -27,18 +27,6 @@ describe('credentials', function() {
 		assert.equal(expected.access_type, actual.access_type);
 	}
  
-	it('createVault', function(done) {
-		var vault = credentials.createVault('test.dat', 'dGVzdAo=');
-		assert.notEqual(null, vault);
-		done();
-	});
-
-	it('loadVault', function(done) {
-		var vault = credentials.loadVault('test.dat', 'dGVzdAo=');
-		assert.notEqual(null, vault);
-		done();
-	});
-
 	it('load', function(done) {
 		var vault = new credentials.Vault('test.dat', 'dGVzdAo=');
 		vault.load();

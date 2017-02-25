@@ -2,8 +2,8 @@
 
 var repoz = require('../lib/repoz');
 
-var projectA = repoz('projectA', 'userA', 'passA');
-var projectB = repoz('projectB', 'userB', 'passB');
+var projectA = new repoz.Project('projectA', 'userA', 'passA');
+var projectB = new repoz.Project('projectB', 'userB', 'passB');
 
 projectA.list('/').then(function() {
 	projectA.get('/foo').then(function(data) {

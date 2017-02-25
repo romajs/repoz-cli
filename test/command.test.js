@@ -1,9 +1,6 @@
 const fs = require('fs');
 const os = require('os');
-var http = require('http');
-var PassThrough = require('stream').PassThrough;
 var sinon = require('sinon');
-const prompt = require('prompt');
  
 var command = require('../lib/command.js');
 var repoz = require('../lib/repoz.js');
@@ -11,66 +8,72 @@ var credentials = require('../lib/credentials.js');
  
 describe('command', function() {
 
+	function fakePromise(expectedResult) {
+		return {
+			then : function(callback) {
+				callback && callback(expectedResult);
+			},
+		}
+	}
+
 	beforeEach(function() {
-
-		var response = new PassThrough();
-		response.write('/test/.repozauth.txt');
-		response.statusCode = 200;
-		response.end();
-
-		var request = new PassThrough();
-		sinon.stub(http, 'request').callsArgWith(1, response).returns(request);
 
 		sinon.stub(fs, 'existsSync').returns(true);
 		sinon.stub(fs, 'readFileSync').returns('hdu9rN225PT/nw/CgDOhyw==');
 		sinon.stub(fs, 'writeFileSync');
-		sinon.stub(fs, 'createReadStream');
 		sinon.stub(os, 'homedir').returns('/home/test/');
 
-		sinon.stub(credentials, 'loadVault').returns(new credentials.Vault('test.dat', 'dGVzdAo='));
-		sinon.stub(prompt, 'get').callsArgWith(1, undefined, {});
+		this.vault = new credentials.Vault('test.dat', 'dGVzdAo=');
+		sinon.stub(credentials, 'Vault').returns(this.vault);
+		sinon.stub(this.vault, 'get').returns(fakePromise({}));
+		
+		this.project = new repoz.Project('test', 'test', '123');
+		sinon.stub(repoz, 'Project').returns(this.project);
+
 	});
  
 	afterEach(function() {
-		http.request.restore();
 		fs.existsSync.restore();
 		fs.readFileSync.restore();
 		fs.writeFileSync.restore();
-		fs.createReadStream.restore();
 		os.homedir.restore();
-		credentials.loadVault.restore();
-		prompt.get.restore();
+		credentials.Vault.restore();
+		repoz.Project.restore();
 	});
  
 	it('exec - list', function(done) {
+		sinon.stub(this.project, 'list').returns(fakePromise());
 		command.exec('list', 'test', [], function() {
 			done();
 		});
 	});
  
 	it('exec - get', function(done) {
-		command.exec('get', 'test', [''], function() {
+		sinon.stub(this.project, 'get').returns(fakePromise());
+		command.exec('get', 'test', [], function() {
 			done();
 		});
 	});
  
 	it('exec - post', function(done) {
-		command.exec('post', 'test', ['', ''], function() {
+		sinon.stub(this.project, 'post').returns(fakePromise());
+		command.exec('post', 'test', [], function() {
 			done();
 		});
 	});
  
 	it('exec - put', function(done) {
-		command.exec('put', 'test', ['', ''], function() {
+		sinon.stub(this.project, 'put').returns(fakePromise());
+		command.exec('put', 'test', [], function() {
 			done();
 		});
 	});
  
 	it('exec - delete', function(done) {
-		command.exec('delete', 'test', [''], function() {
+		sinon.stub(this.project, 'delete').returns(fakePromise());
+		command.exec('delete', 'test', [], function() {
 			done();
 		});
 	});
- 
 
  })

@@ -25,7 +25,7 @@ describe('repoz', function() {
  
 	it('module.exports', function(done) {
 
-		var project = repoz('test', 'test', '123');
+		var project = new repoz.Project('test', 'test', '123');
 		assert.notEqual(null, project);
 
 		project = new repoz.Project('test', 'test', '123');
@@ -47,7 +47,7 @@ describe('repoz', function() {
 		var request = new PassThrough()
 		this.request.callsArgWith(1, response).returns(request);
 
-		var project = repoz('test', 'test', '123');
+		var project = new repoz.Project('test', 'test', '123');
 
 		q.allSettled([
 			project.list(),
@@ -73,7 +73,7 @@ describe('repoz', function() {
 		var request = new PassThrough()
 		this.request.callsArgWith(1, response).returns(request);
 
-		var project = repoz('test', 'test', '123');
+		var project = new repoz.Project('test', 'test', '123');
 	 
 		q.allSettled([
 			project.get(''),
@@ -98,7 +98,7 @@ describe('repoz', function() {
 		var request = new PassThrough()
 		this.request.callsArgWith(1, response).returns(request);
 
-		var project = repoz('test', 'test', '123');
+		var project = new repoz.Project('test', 'test', '123');
 	 
 		q.allSettled([
 			project.post('', ''),
@@ -122,7 +122,7 @@ describe('repoz', function() {
 		var request = new PassThrough()
 		this.request.callsArgWith(1, response).returns(request);
 
-		var project = repoz('test', 'test', '123');
+		var project = new repoz.Project('test', 'test', '123');
 	 
 		q.allSettled([
 			project.put('', ''),
@@ -146,7 +146,7 @@ describe('repoz', function() {
 		var request = new PassThrough()
 		this.request.callsArgWith(1, response).returns(request);
 
-		var project = repoz('test', 'test', '123');
+		var project = new repoz.Project('test', 'test', '123');
 	 
 		q.allSettled([
 			project.delete(),
