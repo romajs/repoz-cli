@@ -28,13 +28,13 @@ describe('credentials', function() {
 	}
  
 	it('load', function(done) {
-		var vault = new credentials.Vault('test.dat', 'dGVzdAo=');
+		var vault = credentials.vault('test.dat', 'dGVzdAo=');
 		vault.load();
 		done();
 	});
 
 	it('save', function(done) {
-		var vault = new credentials.Vault('test.dat', 'dGVzdAo=');
+		var vault = credentials.vault('test.dat', 'dGVzdAo=');
 		vault.save();
 		done();
 	});
@@ -48,7 +48,7 @@ describe('credentials', function() {
 			access_type : 0,
 		};
 
-		var vault = new credentials.Vault('test.dat', 'dGVzdAo=');
+		var vault = credentials.vault('test.dat', 'dGVzdAo=');
 
 		vault.update(expected);
 
@@ -87,7 +87,7 @@ describe('credentials', function() {
 			access_type : 1,
 		};
 
-		var vault = new credentials.Vault('test.dat', 'dGVzdAo=');
+		var vault = credentials.vault('test.dat', 'dGVzdAo=');
 
 		vault.update(expected);
 
@@ -135,7 +135,7 @@ describe('credentials', function() {
 			access_type : 1,
 		};
 
-		var vault = new credentials.Vault('test.dat', 'dGVzdAo=');
+		var vault = credentials.vault('test.dat', 'dGVzdAo=');
 
 		vault.update(expected);
 
@@ -169,7 +169,7 @@ describe('credentials', function() {
 
 		var expected = null;
 
-		var vault = new credentials.Vault('test.dat', 'dGVzdAo=');
+		var vault = credentials.vault('test.dat', 'dGVzdAo=');
 
 		vault.find('test', 0).then(function(credential) {
 
@@ -205,7 +205,7 @@ describe('credentials', function() {
 
 		var expected = null;
 
-		var vault = new credentials.Vault('test.dat', 'dGVzdAo=');
+		var vault = credentials.vault('test.dat', 'dGVzdAo=');
 
 		vault.find('test', 1).then(function(credential) {
 
@@ -247,7 +247,7 @@ describe('credentials', function() {
 			access_type : 0,
 		};
 
-		var vault = new credentials.Vault('test.dat', 'dGVzdAo=');
+		var vault = credentials.vault('test.dat', 'dGVzdAo=');
 
 		this.promptGet.callsArgWith(1, undefined, expected);
 
@@ -270,7 +270,7 @@ describe('credentials', function() {
 			access_type : 0,
 		};
 
-		var vault = new credentials.Vault('test.dat', 'dGVzdAo=');
+		var vault = credentials.vault('test.dat', 'dGVzdAo=');
 
 		vault.update(expected);
 

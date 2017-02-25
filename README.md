@@ -85,7 +85,7 @@ Credentials are updated when:
 
 ```js
 var repoz = require('repoz');
-var myProject = new repoz.Project('myProject', 'myUser', 'myPass')
+var myProject = repoz.project('myProject', 'myUser', 'myPass')
 
 myProject.list(urlpath, recursive)
 myProject.get(urlpath, filepath)

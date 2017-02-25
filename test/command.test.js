@@ -23,12 +23,12 @@ describe('command', function() {
 		sinon.stub(fs, 'writeFileSync');
 		sinon.stub(os, 'homedir').returns('/home/test/');
 
-		this.vault = new credentials.Vault('test.dat', 'dGVzdAo=');
-		sinon.stub(credentials, 'Vault').returns(this.vault);
+		this.vault = credentials.vault('test.dat', 'dGVzdAo=');
+		sinon.stub(credentials, 'vault').returns(this.vault);
 		sinon.stub(this.vault, 'get').returns(fakePromise({}));
 		
-		this.project = new repoz.Project('test', 'test', '123');
-		sinon.stub(repoz, 'Project').returns(this.project);
+		this.project = repoz.project('test', 'test', '123');
+		sinon.stub(repoz, 'project').returns(this.project);
 
 	});
  
@@ -37,8 +37,8 @@ describe('command', function() {
 		fs.readFileSync.restore();
 		fs.writeFileSync.restore();
 		os.homedir.restore();
-		credentials.Vault.restore();
-		repoz.Project.restore();
+		credentials.vault.restore();
+		repoz.project.restore();
 	});
  
 	it('exec - list', function(done) {
