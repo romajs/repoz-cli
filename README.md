@@ -119,7 +119,7 @@ myProject.list('/sub/folder');
 * Auto remove all doubles `'//'`
 * Auto completion of the first `'/'`, so is not needed
 * Auto fix broken query string `'/?'` for list command
-* Auto resolve path like `../other/folder`
+* Auto resolve path like `../other/file` and `~/another/file`
 * Credentials are stored, prompt once, use forever
 
 ### Development
