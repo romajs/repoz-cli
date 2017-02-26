@@ -1,7 +1,7 @@
 const q = require('q');
 var assert = require('assert');
 var http = require('http');
-var PassThrough = require('stream').PassThrough;
+var stream = require('stream');
 var sinon = require('sinon');
 const fs = require('fs');
  
@@ -9,9 +9,21 @@ var repoz = require('../lib/repoz.js');
  
 describe('repoz', function() {
 
+	function request() {
+		var request = new stream.PassThrough();
+		return request;
+	}
+
+	function response(statusCode, data) {
+		var response = new stream.PassThrough();
+		data && response.write(data);
+		response.statusCode = statusCode;
+		return response;
+	}
+
 	beforeEach(function() {
-		this.request = sinon.stub(http, 'request'); 
-		sinon.stub(fs, 'readFileSync');
+		this.request = sinon.stub(http, 'request').returns(request())
+		this.readFileSync = sinon.stub(fs, 'readFileSync');
 		sinon.stub(fs, 'writeFileSync');
 		sinon.stub(fs, 'createReadStream');
 	});
@@ -31,15 +43,7 @@ describe('repoz', function() {
 
 	it('list: 200', function(done) {
 
-		var expected = '/test/.repozauth.txt';
-
-		var response = new PassThrough();
-		response.write(expected);
-		response.statusCode = 200;
-		response.end();
-
-		var request = new PassThrough()
-		this.request.callsArgWith(1, response).returns(request);
+		this.request.callsArgWith(1, response(200, '/test/.repozauth.txt'));
 
 		var project = repoz.project('test', 'test', '123');
 
@@ -57,15 +61,7 @@ describe('repoz', function() {
  
 	it('get: 200', function(done) {
 
-		var expected = 'test';
-
-		var response = new PassThrough();
-		response.write(expected);
-		response.statusCode = 200;
-		response.end();
-
-		var request = new PassThrough()
-		this.request.callsArgWith(1, response).returns(request);
+		this.request.callsArgWith(1, response(200, 'test'));
 
 		var project = repoz.project('test', 'test', '123');
 	 
@@ -82,23 +78,12 @@ describe('repoz', function() {
  
 	it('post: 200', function(done) {
 
-		var expected = '';
-
-		var response = new PassThrough();
-		response.write(expected);
-		response.statusCode = 200;
-		response.end();
-
-		var request = new PassThrough()
-		this.request.callsArgWith(1, response).returns(request);
+		this.readFileSync.returns(new Buffer('test'));
+		this.request.callsArgWith(1, response(200, ''));
 
 		var project = repoz.project('test', 'test', '123');
 	 
-		q.allSettled([
-			project.post('', ''),
-			project.post('x', 'y'),
-			project.post('../x', 'y'),
-		]).then(function() {
+		project.post('foo', 'bar').then(function() {
 			done();
 		});
 
@@ -106,23 +91,12 @@ describe('repoz', function() {
  
 	it('put: 200', function(done) {
 
-		var expected = '';
-
-		var response = new PassThrough();
-		response.write(expected);
-		response.statusCode = 200;
-		response.end();
-
-		var request = new PassThrough()
-		this.request.callsArgWith(1, response).returns(request);
+		this.readFileSync.returns(new Buffer('test'));
+		this.request.callsArgWith(1, response(200, ''));
 
 		var project = repoz.project('test', 'test', '123');
 	 
-		q.allSettled([
-			project.put('', ''),
-			project.put('x', 'y'),
-			project.put('../x', 'y'),
-		]).then(function() {
+		project.put('foo', 'bar').then(function() {
 			done();
 		});
 
@@ -130,15 +104,7 @@ describe('repoz', function() {
  
 	it('delete: 200', function(done) {
 
-		var expected = '';
-
-		var response = new PassThrough();
-		response.write(expected);
-		response.statusCode = 200;
-		response.end();
-
-		var request = new PassThrough()
-		this.request.callsArgWith(1, response).returns(request);
+		this.request.callsArgWith(1, response(200, ''));
 
 		var project = repoz.project('test', 'test', '123');
 	 
@@ -152,5 +118,59 @@ describe('repoz', function() {
 
 	});
  
+	it('list: 401', function(done) {
+
+		this.request.callsArgWith(1, response(401));
+		var project = repoz.project('test', 'test', '123');
+
+		project.list().catch(function() {
+			done();
+		});
+
+	});
+ 
+	it('get: 401', function(done) {
+
+		this.request.callsArgWith(1, response(401));
+		var project = repoz.project('test', 'test', '123');
+
+		project.get('').catch(function() {
+			done();
+		});
+
+	});
+ 
+	it('post: 401', function(done) {
+
+		this.request.callsArgWith(1, response(401));
+		var project = repoz.project('test', 'test', '123');
+
+		project.post('', '').catch(function() {
+			done();
+		});
+
+	});
+ 
+	it('put: 401', function(done) {
+
+		this.request.callsArgWith(1, response(401));
+		var project = repoz.project('test', 'test', '123');
+
+		project.put('', '').catch(function() {
+			done();
+		});
+
+	});
+ 
+	it('delete: 401', function(done) {
+
+		this.request.callsArgWith(1, response(401));
+		var project = repoz.project('test', 'test', '123');
+
+		project.delete().catch(function() {
+			done();
+		});
+
+	});
 
  })
