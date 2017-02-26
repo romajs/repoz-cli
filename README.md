@@ -11,7 +11,7 @@ Repoz: http://repoz.dextra.com.br
 
 ### Client Usage (bin)
 
-`npm install -g repoz`
+`npm install -g repoz`, may require `sudo`
 
 #### Usage
 
@@ -119,10 +119,14 @@ myProject.list('/sub/folder');
 * Auto resolve path like `../other/folder`
 * Credentials are stored, prompt once, use forever
 
-## Development
+### Development
 
 Documentation: http://repoz.dextra.com.br/repoz/docs.html
 
-Install dependencies: `npm install --dev`
+Install: `npm install`, may require `sudo`
 
-Create symbolik link: `sudo npm link`
+Test: `npm test`
+
+Coverage: `./run-coverage`
+
+Running client: `./bin/repoz`. To run as `repoz` only, create a symbolik link with: `npm link`, may require `sudo`
