@@ -2,9 +2,9 @@
 
 [![npm](https://img.shields.io/npm/v/repoz.svg)](https://www.npmjs.com/package/repoz)
 [![CircleCI](https://img.shields.io/circleci/project/github/RedSparr0w/node-csgo-parser.svg)](https://circleci.com/gh/romajs/repoz-cli)
+[![Codecov](https://img.shields.io/codecov/c/github/romajs/repoz-cli.svg)](https://codecov.io/gh/romajs/repoz-cli)
 [![dependencies](https://david-dm.org/romajs/repoz-cli.svg)](https://david-dm.org/romajs/repoz-cli)
 [![devDependencies](https://david-dm.org/romajs/repoz-cli/dev-status.svg)](https://david-dm.org/romajs/repoz-cli?type=dev)
-[![Codecov](https://img.shields.io/codecov/c/github/romajs/repoz-cli.svg)](https://codecov.io/gh/romajs/repoz-cli)
 
 [![NPM](https://nodei.co/npm/repoz.png?downloads=true)](https://nodei.co/npm/repoz/)
 
