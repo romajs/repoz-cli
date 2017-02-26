@@ -6,11 +6,13 @@
 [![devDependencies](https://david-dm.org/romajs/repoz-cli/dev-status.svg)](https://david-dm.org/romajs/repoz-cli?type=dev)
 [![Codecov](https://img.shields.io/codecov/c/github/romajs/repoz-cli.svg)](https://codecov.io/gh/romajs/repoz-cli)
 
+[![NPM](https://nodei.co/npm/repoz.png?downloads=true)](https://nodei.co/npm/repoz/)
+
 Repoz node client. Can be used both as npm pacakge or client tool
 
 Repoz: http://repoz.dextra.com.br
 
-### Client Usage (bin)
+### Client (bin)
 
 `npm install -g repoz`, may require `sudo`
 
@@ -81,7 +83,7 @@ Credentials are updated when:
 * Password changes
 * Access type changes from **read** to **write**
 
-### Module usage (lib)
+### Module (lib)
 
 `npm install --save repoz`
 
