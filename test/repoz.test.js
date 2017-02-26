@@ -1,11 +1,11 @@
 const q = require('q');
-var assert = require('assert');
-var http = require('http');
-var stream = require('stream');
-var sinon = require('sinon');
+const assert = require('assert');
+const http = require('http');
+const stream = require('stream');
+const sinon = require('sinon');
 const fs = require('fs');
  
-var repoz = require('../lib/repoz.js');
+const repoz = require('../lib/repoz.js');
  
 describe('repoz', function() {
 
