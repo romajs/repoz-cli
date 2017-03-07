@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
 const program = require('commander');
-
+const package = require('../package.json');
 const command = require('../lib/command');
 
-program.arguments('<project> [urlpath]')
+program.version(package.version)
+	.arguments('<project> [urlpath]')
 	.option('-r, --recursive', 'recursive')
 	.action(function (project, urlpath, options) {
 		command.exec('list', project, [urlpath, options.recursive]);

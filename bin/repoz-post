@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
 const program = require('commander');
-
+const package = require('../package.json');
 const command = require('../lib/command');
 
-program.arguments('<project> <filepath> <urlpath>')
+program.version(package.version)
+	.arguments('<project> <filepath> <urlpath>')
 	.action(function (project, filepath, urlpath, options) {
 		command.exec('post', project, [filepath, urlpath]);
 	})
