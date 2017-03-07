@@ -33,7 +33,8 @@ help [cmd]                                     display help for [cmd]
 
 Options:
 
--h, --help  output usage information
+-h, --help     output usage information
+-V, --version  output the version number
 
 ```
 
