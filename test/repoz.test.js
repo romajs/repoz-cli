@@ -76,6 +76,9 @@ describe('repoz', function() {
 
 	});
  
+ 	// TODO
+	it('get: 302');
+ 
 	it('post: 200', function(done) {
 
 		this.readFileSync.returns(new Buffer('test'));

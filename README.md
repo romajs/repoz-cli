@@ -134,3 +134,9 @@ Test: `npm test`
 Coverage: `./run-coverage`
 
 Running client: `./bin/repoz`. To run as `repoz` only, create a symbolik link with: `npm link`, may require `sudo`
+
+### To Do
+
+- [ ] get 302 test and coverage
+- [ ] get/download progress bar (https://www.npmjs.com/package/progress)
+- [ ] debug and silly flag support for winston log
