@@ -14,10 +14,14 @@ describe('repoz', function() {
 		return request;
 	}
 
-	function response(statusCode, data) {
+	function response(statusCode, data, headers) {
 		var response = new stream.PassThrough();
+		if(headers != undefined) {
+			response.headers = headers
+		}
 		data && response.write(data);
 		response.statusCode = statusCode;
+		response.end();
 		return response;
 	}
 
@@ -26,6 +30,7 @@ describe('repoz', function() {
 		this.readFileSync = sinon.stub(fs, 'readFileSync');
 		sinon.stub(fs, 'writeFileSync');
 		sinon.stub(fs, 'createReadStream');
+		sinon.stub(fs, 'createWriteStream');
 	});
  
 	afterEach(function() {
@@ -33,6 +38,7 @@ describe('repoz', function() {
 		fs.readFileSync.restore();
 		fs.writeFileSync.restore();
 		fs.createReadStream.restore();
+		fs.createWriteStream.restore();
 	});
  
 	it('repoz.project', function(done) {
@@ -62,6 +68,23 @@ describe('repoz', function() {
 	it('get: 200', function(done) {
 
 		this.request.callsArgWith(1, response(200, 'test'));
+
+		var project = repoz.project('test', 'test', '123');
+	 
+		q.allSettled([
+			project.get(''),
+			project.get('', ''),
+			project.get('x', 'y'),
+			project.get('../x', 'y'),
+		]).then(function() {
+			done();
+		});
+
+	});
+ 
+	it('get: 302', function(done) {
+
+		this.request.callsArgWith(1, response(302, 'test', { location: 'http://foo' }));
 
 		var project = repoz.project('test', 'test', '123');
 	 
